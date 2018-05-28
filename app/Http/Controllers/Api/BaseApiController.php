@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 
 /**
- * Controllers Base Class
+ * Controllers Base API Class
  *
  * @category Controllers
- * @package  App\Http\Controllers
+ * @package  App\Http\Controllers\Api
  * @author   Pascual Pérez <pasperezn@gmail.com>
- * @created  2018-04-04
+ * @created  2018-05-28
  */
-class BaseController extends Controller
+class BaseApiController extends BaseController
 {
 
     /**
