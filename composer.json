@@ -23,7 +23,8 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "p4scu41\\BaseCRUDApi\\": "packages/p4scu41/basecrudapi/src/"
         }
     },
     "autoload-dev": {
