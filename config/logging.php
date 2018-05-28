@@ -44,11 +44,22 @@ return [
             'level' => 'debug',
         ],
 
+        // https://stackoverflow.com/a/48662334
         'daily' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
-            'days' => 7,
+            'driver'     => 'daily',
+            'path'       => storage_path(
+                'logs/laravel_' .
+                ( // Add username of the process
+                    function_exists('posix_getpwuid') ?
+                    (posix_getpwuid(posix_geteuid())['name'] ) : // Linux
+                    getenv('USERNAME') // Windows
+                ) . '_' .
+                php_sapi_name() . // Add the type of PHP interface
+                '.log'
+            ),
+            'level'      => 'debug',
+            'days'       => 7,
+            'permission' => 0664
         ],
 
         'slack' => [
