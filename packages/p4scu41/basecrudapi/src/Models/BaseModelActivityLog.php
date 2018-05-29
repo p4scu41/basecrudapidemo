@@ -43,9 +43,9 @@ class BaseModelActivityLog extends BaseModel
     /**
      * Set $logAttributes with $fillable, to be tracked by Activitylog
      */
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        parent::__construct();
+        parent::__construct($attributes);
 
         self::$logAttributes = $this->fillable;
     }

@@ -21,7 +21,7 @@ class BaseController extends Controller
      */
     public function index(Request $request)
     {
-        return __CLASS__ . '::' . __FUNCTION__;
+        //
     }
 
     /**
