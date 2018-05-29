@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * Class associated with the user table
+ * Class associated with the users table
  *
  * @category Models
  * @package  p4scu41\BaseCRUDApi\Models
@@ -27,23 +27,12 @@ use Illuminate\Support\Facades\Cache;
  * @property datetime $last_login
  * @property string $remember_token
  * @property boolean $active
- * @property int $created_by
- * @property int $updated_by
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
- * @property-read \p4scu41\BaseCRUDApi\Models\User $createdBy
- * @property-read \p4scu41\BaseCRUDApi\Models\User $updatedBy
  * @property-read \p4scu41\BaseCRUDApi\Models\Role $role
- *
- * @method static void boot()
- * @method static boolean creatingHandler(\p4scu41\BaseCRUDApi\Models\User $model)
- * @method static array getCatalogs(boolean $withLabels)
- * @method public p4scu41\BaseCRUDApi\Models\Role role(boolean $withLabels)
- * @method public boolean isAdministrador()
- * @method public boolean owns(\Illuminate\Database\Eloquent\Model $related)
  */
-class User extends BaseModelActivitylog implements
+class User extends BaseModel implements
     AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract
@@ -53,7 +42,7 @@ class User extends BaseModelActivitylog implements
     /**
      * inheritDoc
      */
-    public $table = 'user_account';
+    public $table = 'users';
 
     /**
      * inheritDoc
@@ -63,6 +52,7 @@ class User extends BaseModelActivitylog implements
         'name',
         'email',
         'password',
+        'password_confirmation',
         'last_login',
         'active',
     ];
@@ -78,7 +68,27 @@ class User extends BaseModelActivitylog implements
     /**
      * inheritDoc
      */
-    public static $labels = [
+    public static $rules = [
+        'role_id'               => 'bail|required|integer|exists:roles,id',
+        'name'                  => 'bail|required|min:3|max:55',
+        'email'                 => 'bail|required|min:3|max:40|email|unique:users',
+        'password'              => 'bail|required|min:6|max:61|confirmed',
+        'active'                => 'bail|required|integer|in:0,1',
+    ];
+
+    /**
+     * inheritDoc
+     */
+    public static $messages = [
+        'role_id.required'           => 'No se especificó el Rol de Usuario',
+        'role_id.exis'               => 'El Rol de Usuario especificado no existe',
+        'password_confirmation.same' => 'Las Contraseñas no Coinciden',
+    ];
+
+    /**
+     * inheritDoc
+     */
+    public static $customAttributes = [
         'role_id'               => 'Tipo de Usuario',
         'name'                  => 'Nombre',
         'email'                 => 'E-mail',
@@ -90,43 +100,11 @@ class User extends BaseModelActivitylog implements
     ];
 
     /**
-     * inheritDoc
-     */
-    public static $rules_create = [
-        'role_id'               => 'bail|required|integer|exists:role,id',
-        'name'                  => 'bail|required|min:3|max:55',
-        'email'                 => 'bail|required|min:3|max:40|email|unique:user_account',
-        'password'              => 'bail|required|min:6|max:61',
-        'password_confirmation' => 'same:password',
-        'active'                => 'bail|required|integer|in:0,1',
-    ];
-
-    /**
-     * inheritDoc
-     */
-    public static $rules_update = [
-        'role_id'  => 'bail|required|integer|exists:role,id',
-        'name'     => 'bail|required|min:3|max:55',
-        'email'    => 'bail|required|min:3|max:40|email',
-        'password' => 'bail|min:6|max:61',
-        'active'   => 'bail|required|integer|in:0,1',
-    ];
-
-    /**
-     * inheritDoc
-     */
-    public $error_messages = [
-        'role_id.required'           => 'No se especificó el Rol de Usuario',
-        'role_id.exis'               => 'El Rol de Usuario especificado no existe',
-        'password_confirmation.same' => 'Las Contraseñas no Coinciden',
-    ];
-
-    /**
      * @inheritDoc
      */
     public static function creatingHandler($model)
     {
-        // Encrypt the password before insert
+        // Encrypt the password before create
         $model->password = bcrypt($model->password);
 
         return true;
@@ -144,7 +122,6 @@ class User extends BaseModelActivitylog implements
 
         return true;
     }
-
 
     /**
      * Role Model related with role_id
@@ -164,45 +141,5 @@ class User extends BaseModelActivitylog implements
     public function isActive()
     {
         return $this->active == 1;
-    }
-
-    /**
-     * Check if the user is SuperAdministrador
-     *
-     * @return boolean
-     */
-    public function isSuperAdministrator()
-    {
-        return $this->role_id == Role::SUPER_ADMINISTRATOR;
-    }
-
-    /**
-     * Check if the user is Administrador
-     *
-     * @return boolean
-     */
-    public function isAdministrator()
-    {
-        return $this->role_id == Role::ADMINISTRATOR;
-    }
-
-    /**
-     * Check if the user is the creator (created_by) or owner (user_id) of the $related
-     *
-     * @param \Illuminate\Database\Eloquent\Model $related Object to check
-     *
-     * @return boolean
-     */
-    public function owns($related)
-    {
-        if (Schema::hasColumn($related->getTable(), 'created_by')) {
-            return $this->id == $related->created_by;
-        }
-
-        if (Schema::hasColumn($related->getTable(), 'user_id')) {
-            return $this->id == $related->user_id;
-        }
-
-        return false;
     }
 }

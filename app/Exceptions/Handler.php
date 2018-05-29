@@ -46,6 +46,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        // Verifica si la respuesta debe retornar en formato JSON
+        if ($request->isJson() || $request->expectsJson() || $request->wantsJson() || $request->ajax()) {
+            return response()->json(['message' => $exception->getMessage()], 500);
+        }
+
         return parent::render($request, $exception);
     }
 }

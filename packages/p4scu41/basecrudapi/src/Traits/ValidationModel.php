@@ -46,12 +46,14 @@ trait ValidationModel
     /**
      * Undocumented function
      *
+     * @param array $data
+     *
      * @return void
      * @throws p4scu41\BaseCRUDApi\Exceptions\ValidationModelException
      */
-    public function validate()
+    public function validate($data = null)
     {
-        $this->validator = Validator::make($this->toArray(), static::$rules, static::$messages, static::$customAttributes);
+        $this->validator = Validator::make($data ?: $this->getAttributes(), static::$rules, static::$messages, static::$customAttributes);
 
         if ($this->validator->fails()) {
             throw new ValidationModelException($this->validator, $this);
