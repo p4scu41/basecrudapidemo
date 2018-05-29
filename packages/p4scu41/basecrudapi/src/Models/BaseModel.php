@@ -5,6 +5,7 @@ namespace p4scu41\BaseCRUDApi\Models;
 use Illuminate\Database\Eloquent\Model;
 use p4scu41\BaseCRUDApi\Traits\RegisterEventsHandlers;
 use p4scu41\BaseCRUDApi\Traits\ValidationModel;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * Models Base Class
@@ -16,7 +17,7 @@ use p4scu41\BaseCRUDApi\Traits\ValidationModel;
  */
 class BaseModel extends Model
 {
-    use ValidationModel, RegisterEventsHandlers;
+    use ValidationModel, RegisterEventsHandlers, LogsActivity;
 
     /**
      * The table associated with the model.
@@ -143,6 +144,40 @@ class BaseModel extends Model
      * @var array
      */
     protected $fillable = [];
+
+    /**
+     * Attributes to be tracked by Activitylog
+     *
+     * @var array
+     */
+    protected static $logAttributes = [];
+
+    /**
+     * Attributes to be ignored by Activitylog
+     *
+     * @var array
+     */
+    protected static $ignoreChangedAttributes = [
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
+     * Just log the attributes modified
+     *
+     * @var boolean
+     */
+    protected static $logOnlyDirty = true;
+
+    /**
+     * Set $logAttributes with $fillable, to be tracked by Activitylog
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        self::$logAttributes = $this->fillable;
+    }
 
     /**
      * The "booting" method of the model.

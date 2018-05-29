@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Cache;
  *
  * @property-read \p4scu41\BaseCRUDApi\Models\Role $role
  */
-class User extends BaseModel implements
+class User extends BaseModelActivityLog implements
     AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract
@@ -52,7 +52,6 @@ class User extends BaseModel implements
         'name',
         'email',
         'password',
-        'password_confirmation',
         'last_login',
         'active',
     ];

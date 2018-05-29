@@ -85,7 +85,7 @@ class UserController extends BaseApiController
 
             $model->fill($request->all());
 
-            $model->validate();
+            $model->validate($request->all());
 
             $model->save();
         } catch (ValidationModelException $e) {
