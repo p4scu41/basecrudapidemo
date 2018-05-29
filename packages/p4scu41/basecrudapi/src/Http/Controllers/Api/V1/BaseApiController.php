@@ -15,8 +15,6 @@ use p4scu41\BaseCRUDApi\Http\Controllers\Controller;
  */
 class BaseApiController extends Controller
 {
-    // use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
     /**
      * Display a listing of the resource.
      *

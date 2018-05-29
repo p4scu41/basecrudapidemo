@@ -14,8 +14,6 @@ use Illuminate\Http\Request;
  */
 class BaseController extends Controller
 {
-    // use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
     /**
      * Display a listing of the resource.
      *

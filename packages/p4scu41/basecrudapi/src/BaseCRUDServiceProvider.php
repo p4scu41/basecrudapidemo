@@ -127,7 +127,7 @@ class BaseCRUDApiServiceProvider extends ServiceProvider
         $this->app->router->group(
             [
                 'namespace' => __NAMESPACE__ . '\Http\Controllers\Api\V1',
-                'as'         => 'api.v1',
+                'as'         => 'api.v1.',
                 'prefix'     => 'api/v1',
                 'middleware' => 'api',
             ],
