@@ -56,10 +56,9 @@ class BaseRepository extends PrettusRepository
 
         if (empty($this->rules)) {
             $this->rules[ValidatorInterface::RULE_CREATE] = $modelClass::$rules;
-            $this->rules[ValidatorInterface::RULE_UPDATE] = collect($modelClass::$rules)->flatMap(function ($value)
-            {
-                return str_replace(['|required|', '|required', 'required|', 'required'], '', $value);
-            })->toArray();
+            $this->rules[ValidatorInterface::RULE_UPDATE] = collect($modelClass::$rules)->map(function ($value) {
+                return str_replace(['|required|', '|required', 'required|', 'required'], ['|', '', '|', ''], $value);
+            })->all();
         }
 
         if (empty($this->messages)) {

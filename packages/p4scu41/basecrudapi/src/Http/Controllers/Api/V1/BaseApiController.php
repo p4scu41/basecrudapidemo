@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use p4scu41\BaseCRUDApi\Exceptions\ValidationModelException;
 use p4scu41\BaseCRUDApi\Http\Controllers\BaseController;
+use p4scu41\BaseCRUDApi\Support\ArraySupport;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Controllers Base Api Class
@@ -41,7 +43,11 @@ class BaseApiController extends BaseController
      */
     public function index(Request $request)
     {
-        return $this->repository->paginate();
+        try {
+            return response()->jsonPaginate($this->repository->paginate());
+        } catch (Exception $e) {
+            return response()->jsonException($e);
+        }
     }
 
     /**
@@ -54,13 +60,18 @@ class BaseApiController extends BaseController
     public function store(Request $request)
     {
         try {
-            $this->repository->create($request->all());
+            $model = $this->repository->create($request->all());
+
+            return response()->jsonSuccess(['data' => $model, 'status' => SymfonyResponse::HTTP_CREATED]);
         } catch (ValidationModelException $e) {
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->jsonException($e);
         } catch (ValidatorException $e) {
-            return response()->json($e->toArray(), 422);
+            return response()->jsonException($e, [
+                'message' => ArraySupport::errorsToString($e->getMessageBag()->toArray()),
+                'status' => SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY,
+            ]);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->jsonException($e);
         }
     }
 
@@ -74,11 +85,13 @@ class BaseApiController extends BaseController
     public function show($id)
     {
         try {
-            return $this->repository->findOrFail($id);
+            $model = $this->repository->findOrFail($id);
+
+            return response()->jsonSuccess(['data' => $model]);
         } catch (ModelNotFoundException $e) {
-            return response()->json('Data not found', 404);
+            return response()->jsonNotFound();
         } catch (Exception $e) {
-            return response()->json(['exception' => get_class($e), 'message' => $e->getMessage()], 500);
+            return response()->jsonException($e);
         }
     }
 
@@ -93,15 +106,20 @@ class BaseApiController extends BaseController
     public function update(Request $request, $id)
     {
         try {
-            $this->repository->update($request->all(), $id);
+            $model = $this->repository->update($request->all(), $id);
+
+            return response()->jsonSuccess(['data' => $model]);
         } catch (ValidationModelException $e) {
-            return response()->json($e->getMessage(), $e->getCode());
+            return response()->jsonException($e);
         } catch (ValidatorException $e) {
-            return response()->json($e->toArray(), 422);
+            return response()->jsonException($e, [
+                'message' => ArraySupport::errorsToString($e->getMessageBag()->toArray()),
+                'status' => SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY,
+            ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json('Data not found', 404);
+            return response()->jsonNotFound();
         } catch (Exception $e) {
-            return response()->json(['exception' => get_class($e), 'message' => $e->getMessage()], 500);
+            return response()->jsonException($e);
         }
     }
 
@@ -115,11 +133,15 @@ class BaseApiController extends BaseController
     public function destroy($id)
     {
         try {
+            $model = $this->repository->findOrFail($id);
+
             $this->repository->delete($id);
+
+            return response()->jsonSuccess(['data' => $model]);
         } catch (ModelNotFoundException $e) {
-            return response()->json('Data not found', 404);
+            return response()->jsonNotFound();
         } catch (Exception $e) {
-            return response()->json(['exception' => get_class($e), 'message' => $e->getMessage()], 500);
+            return response()->jsonException($e);
         }
     }
 }
