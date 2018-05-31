@@ -2,7 +2,7 @@
 
 namespace p4scu41\BaseCRUDApi\Support;
 
-// use Auth;
+use Auth;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
@@ -44,7 +44,13 @@ class ExceptionSupport
         }
 
         if (!empty($lines)) {
-            $filtered = preg_grep('/APP/i', $lines);
+
+
+            // Only get lines from App
+            // $filtered = preg_grep('/APP/i', $lines);
+
+            // Only get lines that not contains vendor/laravel
+            $filtered = preg_grep('/vendor\/laravel/i', $lines, PREG_GREP_INVERT);
 
             if (!empty($filtered)) {
                 $info = implode(PHP_EOL, $filtered);
@@ -68,15 +74,16 @@ class ExceptionSupport
         $file = str_replace(base_path() . DIRECTORY_SEPARATOR, '', $e->getFile()) . ':' . $e->getLine();
         $info = /*PHP_EOL . "\t" .*/
             'Request: ' . request()->method() . ' ' .  request()->fullUrl() . PHP_EOL . "\t" .
-            // 'Request IP: '      . request()->ip() . PHP_EOL . "\t" .
-            // 'Request Headers: ' . json_encode(request()->header()) . PHP_EOL . "\t" .
-            // 'Request Server: '  . json_encode(request()->server()) . PHP_EOL . "\t" .
+            'IP: '      . request()->ip() . PHP_EOL . "\t" .
+            // 'Headers: ' . json_encode(request()->header()) . PHP_EOL . "\t" .
+            // 'Server: '  . json_encode(request()->server()) . PHP_EOL . "\t" .
             'File: '    . $file . PHP_EOL . "\t" .
-            // (Auth::check() ? 'Session User: ' . json_encode(Auth::user()) . PHP_EOL . "\t" : '' ) .
+            (Auth::check() ? 'Session User: ' . json_encode(Auth::user()) . PHP_EOL . "\t" : '' ) .
             'Exception: ' . get_class($e) . '['.$e->getCode().']: ' . $e->getMessage() .
             (count(request()->all()) ? PHP_EOL . "\t" . 'Data: ' . json_encode(request()->all()) : '').
             (!empty($extra_data) ? PHP_EOL . "\t" . 'Extra Data: ' . $extra_data : '').
-            ($include_trace ? PHP_EOL . $e->getTraceAsString() /*static::removeNoAppLinesFromTrace($e)*/ : '');
+            ($include_trace ? PHP_EOL . static::removeNoAppLinesFromTrace($e) : '');
+            //$e->getTraceAsString()
 
         return $info;
     }

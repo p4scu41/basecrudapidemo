@@ -10,6 +10,7 @@ use p4scu41\BaseCRUDApi\Http\Controllers\BaseController;
 use p4scu41\BaseCRUDApi\Support\ArraySupport;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Tylercd100\LERN\Facades\LERN;
 
 /**
  * Controllers Base Api Class
@@ -46,6 +47,7 @@ class BaseApiController extends BaseController
         try {
             return response()->jsonPaginate($this->repository->paginate());
         } catch (Exception $e) {
+            LERN::record($e);
             return response()->jsonException($e);
         }
     }
@@ -71,6 +73,7 @@ class BaseApiController extends BaseController
                 'status' => SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY,
             ]);
         } catch (Exception $e) {
+            LERN::record($e);
             return response()->jsonException($e);
         }
     }
@@ -91,6 +94,7 @@ class BaseApiController extends BaseController
         } catch (ModelNotFoundException $e) {
             return response()->jsonNotFound();
         } catch (Exception $e) {
+            LERN::record($e);
             return response()->jsonException($e);
         }
     }
@@ -119,6 +123,7 @@ class BaseApiController extends BaseController
         } catch (ModelNotFoundException $e) {
             return response()->jsonNotFound();
         } catch (Exception $e) {
+            LERN::record($e);
             return response()->jsonException($e);
         }
     }
@@ -141,6 +146,7 @@ class BaseApiController extends BaseController
         } catch (ModelNotFoundException $e) {
             return response()->jsonNotFound();
         } catch (Exception $e) {
+            LERN::record($e);
             return response()->jsonException($e);
         }
     }

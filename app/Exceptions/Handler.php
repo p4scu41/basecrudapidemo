@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use p4scu41\BaseCRUDApi\Support\ExceptionSupport;
+use Psr\Log\LoggerInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -29,12 +31,34 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception  $e
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Exception $e)
     {
-        parent::report($exception);
+        // Extends the parent method to add more information about the exception
+        if ($this->shouldntReport($e)) {
+            return;
+        }
+
+        // Check to see if LERN is installed otherwise you will not get an exception.
+        if (app()->bound("lern")) {
+            app()->make("lern")->record($e); // Record the Exception to the database
+            // app()->make("lern")->notify($e); // Notify the Exception
+        }
+
+        if (config('app.debug')) {
+            try {
+                $logger = $this->container->make(LoggerInterface::class);
+                $logger->error(ExceptionSupport::getInfo($e));
+            } catch (Exception $ex) {
+                throw $e;
+            }
+        }
+
+        if (method_exists($e, 'report')) {
+            return $e->report();
+        }
     }
 
     /**
