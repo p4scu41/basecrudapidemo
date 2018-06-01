@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 use p4scu41\BaseCRUDApi\Support\StringSupport;
 use p4scu41\BaseCRUDApi\Support\ArraySupport;
 
-class TrimStrings extends Middleware
+class StripTagsInputs extends Middleware
 {
     /**
      * The names of the attributes that should not be trimmed.
@@ -31,8 +31,8 @@ class TrimStrings extends Middleware
             return $value;
         }
 
-        return is_string($value) ? StringSupport::trim($value) : (
-            is_array($value) ? ArraySupport::trim($value) : $value
+        return is_string($value) ? StringSupport::stripTags($value) : (
+            is_array($value) ? ArraySupport::stripTags($value) : $value
         );
     }
 }
