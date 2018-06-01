@@ -160,6 +160,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Requirements to BaseCRUDApiServiceProvider
+        p4scu41\BaseCRUDApi\Providers\ResponseMacroServiceProvider::class,
+        PragmaRX\Tracker\Vendor\Laravel\ServiceProvider::class,
+
         p4scu41\BaseCRUDApi\BaseCRUDApiServiceProvider::class,
 
     ],
