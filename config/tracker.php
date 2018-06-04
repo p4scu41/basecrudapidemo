@@ -218,12 +218,12 @@ return [
     /*
      * Do you wish to log url queries and query arguments?
      */
-    'log_queries' => true,
+    'log_queries' => false,
 
     /*
      * Do you wish to log routes and route parameters?
      */
-    'log_routes' => true,
+    'log_routes' => false,
 
     /*
      * Log errors and exceptions?
