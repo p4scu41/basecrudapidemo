@@ -87,6 +87,12 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'dblog' => [
+            'driver' => 'monolog',
+            'handler' => p4scu41\BaseCRUDApi\Handlers\MonologDBHandler::class,
+            'level' => 'debug',
+        ],
     ],
 
 ];
