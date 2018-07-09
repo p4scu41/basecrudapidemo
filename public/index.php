@@ -9,6 +9,20 @@
 
 define('LARAVEL_START', microtime(true));
 
+ini_set('date.timezone', 'America/Chicago');
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('html_errors', 1);
+ini_set('log_errors', 1);
+ini_set(
+    'error_log',
+    __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+    'storage' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'php.log'
+);
+// ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader
