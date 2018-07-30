@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         \PragmaRX\Tracker\Vendor\Laravel\Middlewares\Tracker::class,
+        \p4scu41\BaseCRUDApi\Http\Middleware\PerformanceLoggerFinish::class,
     ];
 
     /**

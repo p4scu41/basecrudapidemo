@@ -47,14 +47,14 @@ class Handler extends ExceptionHandler
             // app()->make("lern")->notify($e); // Notify the Exception
         }
 
-        if (config('app.debug')) {
+        // if (config('app.debug')) {
             try {
                 $logger = $this->container->make(LoggerInterface::class);
                 $logger->error(ExceptionSupport::getInfo($e));
             } catch (Exception $ex) {
                 throw $e;
             }
-        }
+        // }
 
         if (method_exists($e, 'report')) {
             return $e->report();
