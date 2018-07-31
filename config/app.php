@@ -162,9 +162,9 @@ return [
 
         // Requirements to BaseCRUDApiServiceProvider
         p4scu41\BaseCRUDApi\Providers\ResponseMacroServiceProvider::class,
-        PragmaRX\Tracker\Vendor\Laravel\ServiceProvider::class,
-
         p4scu41\BaseCRUDApi\BaseCRUDApiServiceProvider::class,
+        PragmaRX\Tracker\Vendor\Laravel\ServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
     ],
 
@@ -214,6 +214,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         // 'View' => Illuminate\Support\Facades\View::class, // Optional on RESTful API
+
     ],
 
 ];
